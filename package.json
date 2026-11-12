@@ -1,0 +1,38 @@
+{
+  "name": "swarmops-console",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "contracts:refresh": "cd ../swarmops-contracts/gen/ts && npm run build && cd - && npm install @swarmops/contracts"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.5.2",
+    "@connectrpc/connect": "^2.0.2",
+    "@connectrpc/connect-query": "^2.1.0",
+    "@connectrpc/connect-web": "^2.0.2",
+    "@deck.gl/core": "^9.1.12",
+    "@deck.gl/layers": "^9.1.12",
+    "@deck.gl/react": "^9.1.12",
+    "@swarmops/contracts": "file:../swarmops-contracts/gen/ts",
+    "@tanstack/react-query": "^5.80.0",
+    "maplibre-gl": "^5.6.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-map-gl": "^8.0.4",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.5.2",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3"
+  }
+}

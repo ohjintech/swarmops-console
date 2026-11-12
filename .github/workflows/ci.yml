@@ -1,0 +1,48 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: swarmops-console }
+      # Sibling checkout so `file:../swarmops-contracts/gen/ts` resolves until contracts is published.
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/swarmops-contracts
+          path: swarmops-contracts
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Build contracts package
+        working-directory: swarmops-contracts/gen/ts
+        run: npm ci && npm run build
+      - name: Typecheck, test, build
+        working-directory: swarmops-console
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+          npm run build
+      - name: Write production config.json
+        if: github.ref == 'refs/heads/main'
+        working-directory: swarmops-console
+        run: |
+          cat > dist/config.json <<EOF
+          {
+            "apiUrl": "${{ vars.API_URL }}",
+            "wsUrl": "${{ vars.WS_URL }}",
+            "mapStyle": "https://tiles.openfreemap.org/styles/dark",
+            "initialView": { "latitude": 37.8045, "longitude": -122.4645, "zoom": 16 },
+            "staleAfterMs": 3000
+          }
+          EOF
+      - name: Deploy to Cloudflare Pages
+        if: github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy swarmops-console/dist --project-name=swarmops-console

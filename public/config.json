@@ -1,0 +1,7 @@
+{
+  "apiUrl": "http://localhost:8080",
+  "wsUrl": "ws://localhost:8081/ws",
+  "mapStyle": "https://tiles.openfreemap.org/styles/dark",
+  "initialView": { "latitude": 37.8045, "longitude": -122.4645, "zoom": 16 },
+  "staleAfterMs": 3000
+}
